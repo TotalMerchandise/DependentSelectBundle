@@ -1,5 +1,5 @@
 {
-    "name": "serhiobb/dependent-select-bundle",
+    "name": "kabuto/dependent-select-bundle",
     "type": "symfony-bundle",
     "description": "This bundle helps to create dependent AJAX fields for Symfony forms",
     "keywords": ["ajax dependent form", "dependent select"],
@@ -34,7 +34,7 @@
         {
             "type": "package",
             "package": {
-                "name": "weaverryan/derp-dangerzone",
+                "name": "kabuto/dependent-select-bundle",
                 "version": "dev-master",
                 "source": {
                     "url": "git://github.com/serhiobb/DependentSelectBundle.git",
