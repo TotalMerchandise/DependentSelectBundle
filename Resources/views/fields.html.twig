@@ -1,6 +1,6 @@
 {% block dependent_filtered_entity_widget %}
 
-    <select {{ block('widget_attributes') }} class="form-control"></select>
+    <select {{ block('widget_attributes') }} class="form-control" disabled></select>
 
     <script type="text/javascript">
         jQuery(function(){
@@ -24,6 +24,7 @@
                     url:"{{ path('dependent_select') }}",
                     success: function(msg){
                         if (msg != ''){
+                            jQuery("select#{{ form.vars.id }}").get(0).disabled = false;
                             jQuery("select#{{ form.vars.id }}").html(msg).show();
                             jQuery.each(jQuery("select#{{ form.vars.id }} option"), function (index, option){
                                 if (jQuery(option).val() == selected_index)
