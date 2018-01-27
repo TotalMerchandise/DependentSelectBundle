@@ -7,7 +7,7 @@ There are lots of new parameters and features (will be documented soon) implemen
 Install using Composer:
 
 ```
-./composer require evercodelab/dependent-select-bundle
+./composer require kabuto/dependent-select-bundle
 ```
 
 ### Add the bundle to your AppKernel.php:
