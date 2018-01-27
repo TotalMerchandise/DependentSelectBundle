@@ -1,10 +1,15 @@
 {
-    "name": "evercodelab/dependent-select-bundle",
+    "name": "serhiobb/dependent-select-bundle",
     "type": "symfony-bundle",
     "description": "This bundle helps to create dependent AJAX fields for Symfony forms",
     "keywords": ["ajax dependent form", "dependent select"],
     "license": "MIT",
     "authors": [
+        {
+            "name": "Sergey Belous",
+            "homepage": "http://github.com/serhiobb",
+            "role": "Developer"
+        },
         {
             "name": "Evercode Lab",
             "homepage": "http://evercodelab.com",
@@ -23,8 +28,27 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "symfony/symfony": "^2.8 || ^3.0"
+        "symfony/symfony": "^2.8 || ^3.0 || ^4.0"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "weaverryan/derp-dangerzone",
+                "version": "dev-master",
+                "source": {
+                    "url": "git://github.com/serhiobb/DependentSelectBundle.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "psr-4" : {
+                        "Evercode\\DependentSelectBundle\\": ""
+                    }
+                }
+            }
+        }
+    ],
     "suggest": {
         "sonata-project/admin-bundle": "master-dev",
         "sonata-project/doctrine-orm-admin-bundle": "master-dev"
