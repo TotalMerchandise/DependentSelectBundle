@@ -6,6 +6,10 @@
         jQuery(function(){
 
             jQuery("select#{{ form.parent.offsetGet( parent_field ).vars.id }}").change( function() {
+                if (!jQuery(this).val()) {
+                    return;
+                }
+
                 var selected_index = {{ value ? value : 0 }};
                 jQuery.ajax({
                     type: "POST",
