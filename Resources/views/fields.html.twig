@@ -6,12 +6,20 @@
         jQuery(function(){
 
             var types = [
+                // Used to find any field matching the exact ID returned by the backend. Only one instance of this field
+                // should exist within the DOM.
                 "{{ form.parent.offsetGet( parent_field ).vars.id }}",
+                // Find all select types including default EntityType and additional Sonata types like ModelType
+                // Original default
                 "select#{{ form.parent.offsetGet( parent_field ).vars.id }}",
+                // Support for the Sonata ModelAutocompleteType. Field ID differs from the one returned by the backend
+                // therefore the below is necessary to find and watch it.
                 "{{ form.parent.offsetGet( parent_field ).vars.id }}" + '_autocomplete_input',
             ]
 
             types.forEach(function (type) {
+                // Where an element in the DOM with the ID exists, add an event listener to perform the dependent
+                // select AJAX call.
                 if (document.getElementById(type)) {
                     jQuery('#' + type).change(function () {
                         onInputChange(jQuery(this));
@@ -20,6 +28,7 @@
             });
 
             function onInputChange(element) {
+                // Keeps a field in a disabled state if the value is empty to prevent issues saving
                 if (!jQuery(element).val()) {
                     return;
                 }
