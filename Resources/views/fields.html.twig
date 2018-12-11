@@ -5,8 +5,22 @@
     <script type="text/javascript">
         jQuery(function(){
 
-            jQuery("input[id^={{ form.parent.offsetGet( parent_field ).vars.id }}], select[id^={{ form.parent.offsetGet( parent_field ).vars.id }}]").change( function() {
-                if (!jQuery(this).val()) {
+            var types = [
+                "{{ form.parent.offsetGet( parent_field ).vars.id }}",
+                "select#{{ form.parent.offsetGet( parent_field ).vars.id }}",
+                "{{ form.parent.offsetGet( parent_field ).vars.id }}" + '_autocomplete_input',
+            ]
+
+            types.forEach(function (type) {
+                if (document.getElementById(type)) {
+                    jQuery('#' + type).change(function () {
+                        onInputChange(jQuery(this));
+                    });
+                }
+            });
+
+            function onInputChange(element) {
+                if (!jQuery(element).val()) {
                     return;
                 }
 
@@ -14,7 +28,7 @@
                 jQuery.ajax({
                     type: "POST",
                     data: {
-                        parent_id: jQuery(this).val(),
+                        parent_id: jQuery(element).val(),
                         {% if fallback_parent_field is not null %}
                         fallback_parent_id: jQuery("#{{ form.parent.offsetGet( fallback_parent_field ).vars.id }}").val(),
                         {% endif %}
@@ -43,9 +57,9 @@
                         jQuery('html').html(xhr.responseText);
                     }
                 });
-            });
+            }
 
-            jQuery("select#{{ form.parent.offsetGet( parent_field ).vars.id }}").trigger('change');
+            jQuery("select#{{ form.parent.offsetGet( parent_field ).vars.id }}").trigger('change', onInputChange(this));
         });
     </script>
 
