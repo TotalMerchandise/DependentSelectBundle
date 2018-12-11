@@ -5,8 +5,31 @@
     <script type="text/javascript">
         jQuery(function(){
 
-            jQuery("select#{{ form.parent.offsetGet( parent_field ).vars.id }}").change( function() {
-                if (!jQuery(this).val()) {
+            var types = [
+                // Used to find any field matching the exact ID returned by the backend. Only one instance of this field
+                // should exist within the DOM.
+                "{{ form.parent.offsetGet( parent_field ).vars.id }}",
+                // Find all select types including default EntityType and additional Sonata types like ModelType
+                // Original default
+                "select#{{ form.parent.offsetGet( parent_field ).vars.id }}",
+                // Support for the Sonata ModelAutocompleteType. Field ID differs from the one returned by the backend
+                // therefore the below is necessary to find and watch it.
+                "{{ form.parent.offsetGet( parent_field ).vars.id }}" + '_autocomplete_input',
+            ]
+
+            types.forEach(function (type) {
+                // Where an element in the DOM with the ID exists, add an event listener to perform the dependent
+                // select AJAX call.
+                if (document.getElementById(type)) {
+                    jQuery('#' + type).change(function () {
+                        onInputChange(jQuery(this));
+                    });
+                }
+            });
+
+            function onInputChange(element) {
+                // Keeps a field in a disabled state if the value is empty to prevent issues saving
+                if (!jQuery(element).val()) {
                     return;
                 }
 
@@ -14,7 +37,7 @@
                 jQuery.ajax({
                     type: "POST",
                     data: {
-                        parent_id: jQuery(this).val(),
+                        parent_id: jQuery(element).val(),
                         {% if fallback_parent_field is not null %}
                         fallback_parent_id: jQuery("#{{ form.parent.offsetGet( fallback_parent_field ).vars.id }}").val(),
                         {% endif %}
@@ -43,9 +66,9 @@
                         jQuery('html').html(xhr.responseText);
                     }
                 });
-            });
+            }
 
-            jQuery("select#{{ form.parent.offsetGet( parent_field ).vars.id }}").trigger('change');
+            jQuery("select#{{ form.parent.offsetGet( parent_field ).vars.id }}").trigger('change', onInputChange(this));
         });
     </script>
 
