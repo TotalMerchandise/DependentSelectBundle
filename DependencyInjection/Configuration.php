@@ -94,7 +94,6 @@ class Configuration implements ConfigurationInterface
                                     ->end()
                                     ->scalarNode('value')
                                         ->defaultValue(null)
-                                        ->cannotBeEmpty()
                                     ->end()
                                 ->end()
                             ->end()
