@@ -105,9 +105,13 @@ class DependentFilteredEntityController extends Controller
         foreach ($entity_inf['child_entity_filters'] as $key => $filter) {
             $parameterName = self::DQL_PARAMETER_PREFIX.$filter['property'].$key;
 
-            $qb
-                ->andWhere('e.'.$filter['property'].' '.$filter['sign'].' :'.$parameterName)
-                ->setParameter($parameterName, $filter['value']);
+            $parameter = (null !== $filter['value']) ? (':' . $parameterName) : 'NULL';
+
+            if ('NULL' !== $parameter) {
+                $qb->setParameter($parameterName, $filter['value']);
+            }
+
+            $qb->andWhere('e.' . $filter['property'] . ' ' . $filter['sign'] . ' ' . $parameter);
         }
 
         $qb
