@@ -40,7 +40,6 @@ class DependentFilteredEntityType extends AbstractType
             'choice_translation_domain' => false,
             'choice_title_translation_part' => null,
             'callback_parameters' => [],
-            'multiple' => false,
         ));
     }
 
@@ -71,8 +70,6 @@ class DependentFilteredEntityType extends AbstractType
 
         $builder->setAttribute('excluded_entity_id', $options['excluded_entity_id']);
         $builder->setAttribute('callback_parameters', $options['callback_parameters']);
-
-        $builder->setAttribute('multiple', $options['multiple']);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -87,7 +84,5 @@ class DependentFilteredEntityType extends AbstractType
 
         $view->vars['excluded_entity_id'] = $form->getConfig()->getAttribute('excluded_entity_id');
         $view->vars['callback_parameters'] = $form->getConfig()->getAttribute('callback_parameters');
-
-        $view->vars['multiple'] = $form->getConfig()->getAttribute('multiple');
     }
 }
