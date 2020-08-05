@@ -2,6 +2,21 @@
 
     <select {{ block('widget_attributes') }} class="form-control" disabled></select>
 
+    {% if help_link %}
+        <span class="help-block help-link sonata-ba-field-help">
+            <a
+                href="{{ help_link.href }}"
+                class="btn btn-sm btn-default"
+                target="_blank"
+                {% if help_link.dependent_on_parent %}
+                    disabled="disabled"
+                {% endif %}
+            >
+                {{ help_link.button_text }}
+            </a>
+        </span>
+    {% endif %}
+
     <script type="text/javascript">
         jQuery(function() {
             var listenOnIds = [
@@ -27,6 +42,7 @@
                 }
 
                 var selected_index = {{ value ? value : 0 }};
+
                 jQuery.ajax({
                     type: "POST",
                     data: {
@@ -42,15 +58,28 @@
                         callback_parameters: '{{ callback_parameters|json_encode|raw }}'
                     },
                     url:"{{ path('dependent_select') }}",
-                    success: function(msg){
-                        if (msg != ''){
-                            jQuery("select#{{ form.vars.id }}").get(0).disabled = false;
-                            jQuery("select#{{ form.vars.id }}").html(msg).show();
+                    success: function (msg) {
+                        if (msg != '') {
+                            var selectElement = jQuery("select#{{ form.vars.id }}")
+
+                            selectElement.get(0).disabled = false;
+                            selectElement.html(msg).show();
+
                             jQuery.each(jQuery("select#{{ form.vars.id }} option"), function (index, option){
                                 if (jQuery(option).val() == selected_index)
                                     jQuery(option).prop('selected', true);
                             });
-                            jQuery("select#{{ form.vars.id }}").trigger('change');
+
+                            selectElement.trigger('change');
+
+                            {% if help_link and help_link.dependent_on_parent and help_link.dependent_param_name %}
+                                var helpLinkElement = selectElement.parent().children('.help-link').children('a');
+
+                                var queryStringKey = "{{ help_link.default_params ? '&' : '?' }}";
+
+                                helpLinkElement.attr('href', helpLinkElement.attr('href') + queryStringKey + "{{ help_link.dependent_param_name }}=" + parentElementObjectId);
+                                helpLinkElement.removeAttr('disabled');
+                            {% endif %}
                         } else {
                             jQuery("select#{{ form.vars.id }}").html('<em>{{ no_result_msg|trans() }}</em>');
                         }

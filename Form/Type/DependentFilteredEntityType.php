@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DependentFilteredEntityType extends AbstractType
@@ -40,6 +41,7 @@ class DependentFilteredEntityType extends AbstractType
             'choice_translation_domain' => false,
             'choice_title_translation_part' => null,
             'callback_parameters' => [],
+            'help_link' => [],
         ));
     }
 
@@ -70,6 +72,25 @@ class DependentFilteredEntityType extends AbstractType
 
         $builder->setAttribute('excluded_entity_id', $options['excluded_entity_id']);
         $builder->setAttribute('callback_parameters', $options['callback_parameters']);
+
+        $helpLink = $options['help_link'];
+
+        if ($helpLink) {
+            $requiredParams = [
+                'route',
+                'button_text',
+            ];
+
+            foreach ($requiredParams as $requiredParam) {
+                if (!array_key_exists($requiredParam, $helpLink)) {
+                    throw new UndefinedOptionsException('Help link required param \'' . $requiredParam . '\' is missing');
+                }
+            }
+
+            $helpLink['href'] = $this->container->get('router')->generate($helpLink['route'], $helpLink['default_params'] ?? []);
+        }
+
+        $builder->setAttribute('help_link', $helpLink);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -84,5 +105,7 @@ class DependentFilteredEntityType extends AbstractType
 
         $view->vars['excluded_entity_id'] = $form->getConfig()->getAttribute('excluded_entity_id');
         $view->vars['callback_parameters'] = $form->getConfig()->getAttribute('callback_parameters');
+
+        $view->vars['help_link'] = $form->getConfig()->getAttribute('help_link');
     }
 }
